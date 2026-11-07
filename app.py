@@ -641,6 +641,10 @@ class Handler(BaseHTTPRequestHandler):
         else: rows=c.execute('SELECT id,expense_date,category,amount,mode,description,employee,frequency FROM expenses ORDER BY expense_date,id').fetchall(); w.writerow(['id','expense_date','category','amount','mode','description','employee','frequency']); [w.writerow(tuple(r)) for r in rows]; name='expenses.csv'
         c.close(); data=out.getvalue().encode(); self.send_response(200); self.send_header('Content-Type','text/csv'); self.send_header('Content-Disposition',f'attachment; filename="{name}"'); self.send_header('Content-Length',str(len(data))); self.end_headers(); self.wfile.write(data)
 
+# Initialize database when the application is imported by Vercel
+if os.environ.get('VERCEL'):
+    init_db()
+
 if __name__=='__main__':
     os.makedirs(LOG_DIR,exist_ok=True)
     os.makedirs(BACKUP_DIR,exist_ok=True)
