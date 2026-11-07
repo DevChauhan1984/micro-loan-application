@@ -120,8 +120,64 @@ def fmt(v): return f'₹{money(v):,.2f}'
 def page(title,body,branch=''):
     c=conn(); brs=c.execute('SELECT id,code,name FROM branches WHERE active=1 ORDER BY name').fetchall(); c.close()
     opts='<option value="">All Branches</option>'+''.join(f'<option value="{r["id"]}" {"selected" if str(r["id"])==str(branch) else ""}>{escape(r["code"])} — {escape(r["name"])}</option>' for r in brs)
-    nav=f'''<nav><b>MicroLoan Manager V1.5</b><a href="/">Dashboard</a><a href="/branches">Branches</a><a href="/customers">Customers</a><a href="/loans">Loans</a><a href="/topups">Top-Ups</a><a href="/collections">Collections</a><a href="/outstanding">Outstanding</a><a href="/expenses">Expenses</a><a href="/reports">Reports</a><a href="/audit">Audit</a><a href="/backup">Backup</a><a href="/legacy-import">Legacy Load</a><form action="" method="get" style="display:flex;gap:6px;align-items:center"><b>Branch</b><select name="branch" onchange="this.form.submit()">{opts}</select></form><form action="/search" method="get"><input name="q" placeholder="Search customer / mobile / loan"><button>Search</button></form></nav>'''
-    
+    nav = f'''
+    <nav>
+        <b class="nav-brand">MicroLoan Manager V1.5</b>
+
+        <div class="nav-links">
+            <a href="/">Dashboard</a>
+            <a href="/branches">Branches</a>
+            <a href="/customers">Customers</a>
+            <a href="/loans">Loans</a>
+            <a href="/topups">Top-Ups</a>
+            <a href="/collections">Collections</a>
+            <a href="/outstanding">Outstanding</a>
+            <a href="/expenses">Expenses</a>
+            <a href="/reports">Reports</a>
+            <a href="/audit">Audit</a>
+            <a href="/backup">Backup</a>
+            <a href="/legacy-import">Legacy Load</a>
+        </div>
+
+        <form class="nav-search" action="/search" method="get">
+            <input name="q" placeholder="Search customers / loans">
+            <button type="submit">Search</button>
+        </form>
+
+        <form class="nav-branch" action="" method="get">
+            <b>Branch</b>
+            <select name="branch" onchange="this.form.submit()">
+                {opts}
+            </select>
+        </form>
+
+        <details class="nav-more">
+            <summary title="More options">&#8942;</summary>
+
+            <div class="nav-dropdown">
+                <a href="/">Dashboard</a>
+                <a href="/branches">Branches</a>
+                <a href="/customers">Customers</a>
+                <a href="/loans">Loans</a>
+                <a href="/topups">Top-Ups</a>
+                <a href="/collections">Collections</a>
+                <a href="/outstanding">Outstanding</a>
+                <a href="/expenses">Expenses</a>
+                <a href="/reports">Reports</a>
+                <a href="/audit">Audit</a>
+                <a href="/backup">Backup</a>
+                <a href="/legacy-import">Legacy Load</a>
+
+                <form class="nav-mobile-branch" action="" method="get">
+                    <b>Branch</b>
+                    <select name="branch" onchange="this.form.submit()">
+                        {opts}
+                    </select>
+                </form>
+            </div>
+        </details>
+    </nav>
+    '''    
     css = '''
 * {
     box-sizing: border-box;
@@ -141,25 +197,40 @@ body {
     font-size: 15px;
 }
 
-/* Navigation */
+/* Modern Navigation */
 nav {
-    background: #172331;
+    background: linear-gradient(135deg, #102a43, #1769aa);
     color: white;
     padding: 14px 22px;
     display: flex;
     gap: 16px;
     align-items: center;
     flex-wrap: wrap;
+    box-shadow: 0 3px 12px #102a4333;
 }
 
 nav a {
-    color: white;
+    color: #ffffff;
     text-decoration: none;
     font-weight: 600;
+    padding: 9px 12px;
+    border-radius: 7px;
+    transition: background 0.2s ease;
+}
+
+nav a:hover {
+    background: #ffffff26;
 }
 
 nav form {
     margin-left: auto;
+}
+
+nav input {
+    max-width: 230px;
+    border: 1px solid #d5e5f5;
+    border-radius: 20px;
+    padding: 9px 14px;
 }
 
 /* Main content */
@@ -361,6 +432,155 @@ th, td {
 
     nav {
         gap: 9px;
+    }
+}
+
+/* Navigation layout */
+.nav-brand {
+    white-space: nowrap;
+    font-size: 18px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.nav-search {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    min-width: 0;
+}
+
+.nav-search input {
+    width: 190px;
+    min-width: 0;
+}
+
+.nav-search button {
+    white-space: nowrap;
+}
+
+.nav-branch {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav-branch select,
+.nav-mobile-branch select {
+    width: auto;
+    max-width: 150px;
+}
+
+.nav-more {
+    display: none;
+    position: relative;
+}
+
+.nav-more summary {
+    list-style: none;
+    cursor: pointer;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    padding: 0 10px;
+}
+
+.nav-more summary::-webkit-details-marker {
+    display: none;
+}
+
+.nav-dropdown {
+    position: absolute;
+    right: 0;
+    top: 42px;
+    z-index: 1000;
+    width: 230px;
+    max-height: 70vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 5px 20px #0003;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-dropdown a {
+    color: #17324d;
+    padding: 11px;
+    border-radius: 6px;
+}
+
+.nav-dropdown a:hover {
+    background: #eaf3fb;
+}
+
+.nav-mobile-branch {
+    display: none;
+}
+
+/* Mobile navigation */
+@media (max-width: 700px) {
+    nav {
+        padding: 10px;
+        gap: 8px;
+        flex-wrap: nowrap;
+    }
+
+    .nav-brand {
+        font-size: 14px;
+        max-width: 125px;
+        white-space: normal;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .nav-branch {
+        display: none;
+    }
+
+    .nav-search {
+        flex: 1;
+        width: auto;
+        margin-left: auto;
+    }
+
+    .nav-search input {
+        width: 100%;
+        max-width: none;
+        font-size: 13px;
+        padding: 9px;
+    }
+
+    .nav-search button {
+        font-size: 13px;
+        padding: 9px;
+    }
+
+    .nav-more {
+        display: block;
+        flex-shrink: 0;
+    }
+
+    .nav-mobile-branch {
+        display: block;
+        padding: 10px;
+        border-top: 1px solid #ddd;
+    }
+
+    .nav-mobile-branch select {
+        width: 100%;
+        max-width: 100%;
+        margin-top: 8px;
     }
 }
 '''
