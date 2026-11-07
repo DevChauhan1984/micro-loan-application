@@ -363,6 +363,17 @@ th, td {
         gap: 9px;
     }
 }
+
+/* TEMPORARY MOBILE TEST */
+@media (max-width: 700px) {
+    body {
+        background: yellow !important;
+    }
+
+    main {
+        border: 5px solid red !important;
+    }
+}
 '''
 
     return f'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{escape(title)}</title><style>{css}</style></head><body>{nav}<main>{body}</main></body></html>'
