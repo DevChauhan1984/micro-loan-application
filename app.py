@@ -8,7 +8,9 @@ from datetime import date, datetime, timedelta
 from html import escape
 
 BASE=os.path.dirname(os.path.abspath(__file__))
-DB=os.path.join(BASE,'data','microloan.db')
+DATA_DIR=os.environ.get('DATA_DIR',os.path.join(BASE,'data'))
+os.makedirs(DATA_DIR,exist_ok=True)
+DB=os.environ.get('DATABASE_PATH',os.path.join(DATA_DIR,'microloan.db'))
 # Production configuration
 CONFIG_PATH=os.path.join(BASE,'config.json')
 DEFAULT_CONFIG={'host':'0.0.0.0','port':5050,'auto_open_browser':False,'backup_on_start':True,'backup_retention_days':30}
@@ -28,9 +30,10 @@ def load_config():
     return cfg
 
 CONFIG=load_config()
-HOST=CONFIG['host']; PORT=CONFIG['port']
-LOG_DIR=os.path.join(BASE,'logs')
-BACKUP_DIR=os.path.join(BASE,'backups')
+HOST='0.0.0.0'
+PORT=int(os.environ.get('PORT',CONFIG['port']))
+LOG_DIR=os.path.join(DATA_DIR,'logs')
+BACKUP_DIR=os.path.join(DATA_DIR,'backups')
 
 def log(message):
     os.makedirs(LOG_DIR,exist_ok=True)
