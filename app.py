@@ -121,7 +121,250 @@ def page(title,body,branch=''):
     c=conn(); brs=c.execute('SELECT id,code,name FROM branches WHERE active=1 ORDER BY name').fetchall(); c.close()
     opts='<option value="">All Branches</option>'+''.join(f'<option value="{r["id"]}" {"selected" if str(r["id"])==str(branch) else ""}>{escape(r["code"])} — {escape(r["name"])}</option>' for r in brs)
     nav=f'''<nav><b>MicroLoan Manager V1.5</b><a href="/">Dashboard</a><a href="/branches">Branches</a><a href="/customers">Customers</a><a href="/loans">Loans</a><a href="/topups">Top-Ups</a><a href="/collections">Collections</a><a href="/outstanding">Outstanding</a><a href="/expenses">Expenses</a><a href="/reports">Reports</a><a href="/audit">Audit</a><a href="/backup">Backup</a><a href="/legacy-import">Legacy Load</a><form action="" method="get" style="display:flex;gap:6px;align-items:center"><b>Branch</b><select name="branch" onchange="this.form.submit()">{opts}</select></form><form action="/search" method="get"><input name="q" placeholder="Search customer / mobile / loan"><button>Search</button></form></nav>'''
-    css='''body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8;color:#18212b}nav{background:#172331;color:white;padding:16px 24px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}nav a{color:white;text-decoration:none;font-weight:600}nav form{margin-left:auto}main{padding:26px;max-width:1600px;margin:auto}.panel{background:white;border-radius:12px;padding:22px;margin:16px 0;box-shadow:0 2px 10px #0001}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:white;padding:18px;border-radius:10px;box-shadow:0 2px 10px #0001}.big{font-size:26px;font-weight:bold;margin-top:6px}label{display:block;margin:10px 0 5px;font-weight:600}input,select,textarea,button{padding:9px;font-size:15px;box-sizing:border-box}input,select,textarea{width:100%;border:1px solid #aaa;border-radius:5px}button{background:#1976b8;color:white;border:0;border-radius:6px;cursor:pointer}.linkbtn{display:inline-block;padding:8px 11px;background:#1976b8;color:white;border-radius:6px;text-decoration:none}.danger{background:#c62828}.warn{background:#fff4cc}.ok{background:#e3f7e9}.bad{background:#fde8e8}.calc{font-size:22px;font-weight:bold;padding:14px;background:#eef6ff;border-radius:8px;margin-top:14px}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid #ddd;text-align:left;white-space:nowrap}.muted,small{color:#667}.right{text-align:right}@media(max-width:1000px){.grid,.cards{grid-template-columns:1fr 1fr}}@media(max-width:700px){.grid,.cards{grid-template-columns:1fr}nav form{margin-left:0;width:auto}}'''
+    
+    css = '''
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #18212b;
+    font-size: 15px;
+}
+
+/* Navigation */
+nav {
+    background: #172331;
+    color: white;
+    padding: 14px 22px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+nav form {
+    margin-left: auto;
+}
+
+/* Main content */
+main {
+    width: 100%;
+    max-width: 1600px;
+    padding: 26px;
+    margin: auto;
+}
+
+.panel {
+    background: white;
+    border-radius: 12px;
+    padding: 22px;
+    margin: 16px 0;
+    box-shadow: 0 2px 10px #0001;
+}
+
+/* Dashboard layouts */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.card {
+    min-width: 0;
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px #0001;
+}
+
+.big {
+    font-size: 26px;
+    font-weight: bold;
+    margin-top: 6px;
+}
+
+/* Forms */
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: 600;
+}
+
+input, select, textarea, button {
+    padding: 11px;
+    font-size: 16px;
+    max-width: 100%;
+    border-radius: 5px;
+}
+
+input, select, textarea {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid #aaa;
+}
+
+textarea {
+    min-height: 80px;
+}
+
+button {
+    background: #1976b8;
+    color: white;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    min-height: 42px;
+}
+
+.linkbtn {
+    display: inline-block;
+    padding: 10px 13px;
+    background: #1976b8;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.danger { background: #c62828; }
+.warn { background: #fff4cc; }
+.ok { background: #e3f7e9; }
+.bad { background: #fde8e8; }
+
+.calc {
+    font-size: 22px;
+    font-weight: bold;
+    padding: 14px;
+    background: #eef6ff;
+    border-radius: 8px;
+    margin-top: 14px;
+}
+
+/* Tables */
+.tablewrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.muted, small { color: #667; }
+.right { text-align: right; }
+
+/* Tablet */
+@media (max-width: 1000px) {
+    main {
+        padding: 18px;
+    }
+
+    .grid, .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+    body {
+        font-size: 14px;
+    }
+
+    main {
+        padding: 12px;
+    }
+
+    nav {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    nav form {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    nav a {
+        font-size: 14px;
+    }
+
+    .grid, .cards {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .panel {
+        padding: 14px;
+        margin: 10px 0;
+    }
+
+    .card {
+        padding: 14px;
+    }
+
+    .big {
+        font-size: 22px;
+    }
+
+    h1 { font-size: 23px; }
+    h2 { font-size: 20px; }
+    h3 { font-size: 17px; }
+
+    button, .linkbtn {
+        min-height: 44px;
+    }
+
+    .tablewrap table {
+        min-width: 600px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+    main {
+        padding: 8px;
+    }
+
+    .panel {
+        padding: 11px;
+    }
+
+    nav {
+        gap: 9px;
+    }
+}
+'''
+
     return f'<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{escape(title)}</title><style>{css}</style></head><body>{nav}<main>{body}</main></body></html>'
 
 def send_html(h,html,status=200):
