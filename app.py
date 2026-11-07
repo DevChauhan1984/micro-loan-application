@@ -7,10 +7,20 @@ from urllib.parse import urlparse, parse_qs
 from datetime import date, datetime, timedelta
 from html import escape
 
-BASE=os.path.dirname(os.path.abspath(__file__))
-DATA_DIR=os.environ.get('DATA_DIR',os.path.join(BASE,'data'))
-os.makedirs(DATA_DIR,exist_ok=True)
-DB=os.environ.get('DATABASE_PATH',os.path.join(DATA_DIR,'microloan.db'))
+BASE = os.path.dirname(os.path.abspath(__file__))
+
+# Use Vercel's writable temporary directory
+DATA_DIR = os.environ.get(
+    'DATA_DIR',
+    '/tmp/data' if os.environ.get('VERCEL') else os.path.join(BASE, 'data')
+)
+
+os.makedirs(DATA_DIR, exist_ok=True)
+
+DB = os.environ.get(
+    'DATABASE_PATH',
+    os.path.join(DATA_DIR, 'microloan.db')
+)
 # Production configuration
 CONFIG_PATH=os.path.join(BASE,'config.json')
 DEFAULT_CONFIG={'host':'0.0.0.0','port':5050,'auto_open_browser':False,'backup_on_start':True,'backup_retention_days':30}
