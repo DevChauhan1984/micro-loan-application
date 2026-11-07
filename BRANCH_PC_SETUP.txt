@@ -1,0 +1,17 @@
+BRANCH PC QUICK SETUP
+=====================
+
+On each branch laptop/desktop:
+
+1. Connect to the same company LAN/VPN as the MicroLoan Manager server.
+2. Open Chrome/Edge.
+3. Enter:
+   http://<SERVER-IP>:5050/
+4. Optionally create a desktop shortcut to that address.
+
+Example:
+http://192.168.1.50:5050/
+
+The branch PC does not need Python or the database.
+All branches use the central database, so the owner's "All Branches" dashboard
+shows consolidated live data.

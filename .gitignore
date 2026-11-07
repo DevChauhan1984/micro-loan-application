@@ -1,0 +1,32 @@
+# Python cache
+__pycache__/
+*.py[cod]
+# Virtual environments
+venv/
+.venv/
+env/
+# Secrets and configuration
+.env
+.env.*
+config.json
+# Production data and logs
+data/
+logs/
+backups/
+*.log
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+# Excel files - review before sharing
+*.xlsx
+*.xls
+# Operating system
+.DS_Store
+Thumbs.db
+# Local backup files
+*.backup
+app_before_*.py
+app_original_backup.py
+app_backup_security.py
+app_clear_backup.py

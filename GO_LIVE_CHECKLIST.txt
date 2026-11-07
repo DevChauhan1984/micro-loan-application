@@ -1,0 +1,39 @@
+MICROLOAN MANAGER V1.5 - GO-LIVE CHECKLIST
+============================================
+
+SERVER
+[ ] Windows PC/server selected and kept powered on
+[ ] Python 3 installed
+[ ] V1.5 extracted to permanent folder
+[ ] run_server.bat tested
+[ ] Server LAN IP recorded (ipconfig)
+[ ] Private-network firewall rule configured
+[ ] Branch master loaded
+[ ] Legacy sample loaded and reconciled
+[ ] Backup tested and copied outside the application folder
+
+BRANCH PCs
+[ ] Same LAN/VPN connectivity verified
+[ ] Browser opens http://<SERVER-IP>:5050/
+[ ] Branch user can create customer
+[ ] Customer branch is correct
+[ ] Loan inherits customer branch
+[ ] Collection inherits loan branch
+[ ] Branch expense works
+[ ] Branch dashboard filter works
+[ ] All Branches consolidated dashboard works
+
+DATA MIGRATION
+[ ] Legacy workbook validated
+[ ] Customer count reconciled
+[ ] Loan count reconciled
+[ ] Total loan/payable balances reconciled
+[ ] Historical collection totals reconciled
+[ ] Expense totals reconciled
+[ ] Top-up relationships checked
+[ ] Final backup taken before go-live
+
+IMPORTANT
+Do not install separate database copies on each branch if you need live
+consolidated All Branches reporting. Use one central server database and browser
+access from all branch desktops/laptops.
